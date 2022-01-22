@@ -34,7 +34,7 @@ func (p *Player) IsAlive() bool {
 
 func (p *Player) CheckIncomingMissle(location Location) FireResult {
 	for _, ship := range p.ships {
-		hit := ship.IncomingMissle(location)
+		hit := ship.IsHit(location)
 		if hit {
 			if ship.IsSunk() {
 				return Sunk

@@ -49,9 +49,9 @@ func (s *Ship) GetLocationDesc() string {
 	return desc
 }
 
-func (s *Ship) IncomingMissle(location Location) bool {
+func (s *Ship) IsHit(location Location) bool {
 	if s.hasBeenHit(location) {
-		return false
+		return true
 	}
 	hit := false
 	if s.down {
