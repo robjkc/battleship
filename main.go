@@ -8,7 +8,6 @@ import (
 func main() {
 
 	numPlayers := getNumPlayers()
-	fmt.Println(numPlayers)
 
 	game := NewGame(numPlayers)
 	game.LayoutShips()

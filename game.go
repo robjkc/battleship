@@ -39,20 +39,21 @@ func NewGame(numPlayers int) *Game {
 func (g *Game) LayoutShips() {
 	rand.Seed(time.Now().UnixNano())
 
+	// Create the ships and players.
 	for i := 0; i < 2; i++ {
 		ships := g.getShips()
 		g.players[i] = NewPlayer(ships)
 	}
 
 	if g.numPlayers == 2 {
-		fmt.Println("player 1 ships:")
+		fmt.Println("Player 1 ships:")
 		g.players[0].DisplayShips()
-		fmt.Println("player 2 ships:")
+		fmt.Println("Player 2 ships:")
 		g.players[1].DisplayShips()
 	} else {
-		fmt.Println("my ships:")
+		fmt.Println("My ships:")
 		g.players[0].DisplayShips()
-		fmt.Println("computer ships:")
+		fmt.Println("Computer ships:")
 		g.players[1].DisplayShips()
 	}
 }
