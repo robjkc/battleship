@@ -68,7 +68,8 @@ func (g *Game) playTwoPlayer() {
 		location := g.getLocation()
 		targetPlayer := g.GetTargetPlayer()
 
-		g.FireMissle(targetPlayer, location)
+		result := g.FireMissle(targetPlayer, location)
+		fmt.Println(result)
 
 		if !targetPlayer.IsAlive() {
 			fmt.Println("[ Player", g.currentPlayer+1, "] is the winner!")
@@ -86,10 +87,12 @@ func (g *Game) playComputer() {
 
 		targetPlayer := g.GetTargetPlayer()
 
+		result := g.FireMissle(targetPlayer, location)
 		if g.currentPlayer == 1 {
-			fmt.Println("Computer guessed:", location.Description())
+			fmt.Println("[Computer guessed:", location.Description()+"]:", result)
+		} else {
+			fmt.Println(result)
 		}
-		g.FireMissle(targetPlayer, location)
 
 		if !targetPlayer.IsAlive() {
 			if g.currentPlayer == 0 {
@@ -116,20 +119,17 @@ func (g *Game) GetTargetPlayer() *Player {
 	return g.players[g.GetTargetPlayerNumber()]
 }
 
-func (g *Game) FireMissle(targetPlayer *Player, location Location) {
+func (g *Game) FireMissle(targetPlayer *Player, location Location) string {
 
 	result := targetPlayer.CheckIncomingMissle(location)
 	switch result {
-	case Miss:
-		fmt.Println("Miss!")
-
 	case Hit:
-		fmt.Println("Hit!")
+		return "Hit!"
 
 	case Sunk:
-		fmt.Println("You sunk my battleship!")
+		return "You sunk my battleship!"
 	}
-
+	return "Miss!"
 }
 
 func (g *Game) getShips() []*Ship {
