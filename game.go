@@ -19,10 +19,11 @@ func (l Location) Description() string {
 }
 
 type Game struct {
-	numPlayers    int
-	players       [2]*Player
-	currentPlayer int
-	board         *Board
+	numPlayers      int
+	players         [2]*Player
+	currentPlayer   int
+	board           *Board
+	computerChoices map[Location]bool
 }
 
 func NewGame(numPlayers int) *Game {
@@ -30,6 +31,7 @@ func NewGame(numPlayers int) *Game {
 	g.numPlayers = numPlayers
 	g.currentPlayer = 0
 	g.board = NewBoard()
+	g.computerChoices = make(map[Location]bool)
 
 	return g
 }
@@ -154,13 +156,25 @@ func (g *Game) getShips() []*Ship {
 	return ships
 }
 
-func (g *Game) getLocation() Location {
-	if g.numPlayers == 1 && g.currentPlayer == 1 {
+func (g *Game) getComputerLocation() Location {
+	for {
 		// Generate a random location to fire for the computer.
 		x := rand.Intn(10)
 		y := rand.Intn(10)
 		l := Location{x: x, y: y}
+		_, exists := g.computerChoices[l]
+		if exists {
+			// Computer already made this choice.
+			continue
+		}
+		g.computerChoices[l] = true
 		return l
+	}
+}
+
+func (g *Game) getLocation() Location {
+	if g.numPlayers == 1 && g.currentPlayer == 1 {
+		return g.getComputerLocation()
 	}
 	for {
 		if g.numPlayers == 2 {
