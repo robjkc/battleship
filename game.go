@@ -13,6 +13,11 @@ type Location struct {
 	y int
 }
 
+func (l Location) Description() string {
+	letters := "ABCDEFGHIJ"
+	return fmt.Sprintf("%s%d", string(letters[l.x]), l.y+1)
+}
+
 type Game struct {
 	numPlayers    int
 	players       [2]*Player
@@ -37,13 +42,28 @@ func (g *Game) LayoutShips() {
 		g.players[i] = NewPlayer(ships)
 	}
 
-	fmt.Println("player 1 ships:")
-	g.players[0].DisplayShips()
-	fmt.Println("player 2 ships:")
-	g.players[1].DisplayShips()
+	if g.numPlayers == 2 {
+		fmt.Println("player 1 ships:")
+		g.players[0].DisplayShips()
+		fmt.Println("player 2 ships:")
+		g.players[1].DisplayShips()
+	} else {
+		fmt.Println("my ships:")
+		g.players[0].DisplayShips()
+		fmt.Println("computer ships:")
+		g.players[1].DisplayShips()
+	}
 }
 
 func (g *Game) Play() {
+	if g.numPlayers == 2 {
+		g.playTwoPlayer()
+	} else {
+		g.playComputer()
+	}
+}
+
+func (g *Game) playTwoPlayer() {
 	for {
 		location := g.getLocation()
 		targetPlayer := g.GetTargetPlayer()
@@ -52,6 +72,31 @@ func (g *Game) Play() {
 
 		if !targetPlayer.IsAlive() {
 			fmt.Println("[ Player", g.currentPlayer+1, "] is the winner!")
+			break
+		}
+
+		// Toggle the player.
+		g.currentPlayer = g.GetTargetPlayerNumber()
+	}
+}
+
+func (g *Game) playComputer() {
+	for {
+		location := g.getLocation()
+
+		targetPlayer := g.GetTargetPlayer()
+
+		if g.currentPlayer == 1 {
+			fmt.Println("Computer guessed:", location.Description())
+		}
+		g.FireMissle(targetPlayer, location)
+
+		if !targetPlayer.IsAlive() {
+			if g.currentPlayer == 0 {
+				fmt.Println("You are the winner!")
+			} else {
+				fmt.Println("Computer won!")
+			}
 			break
 		}
 
@@ -110,8 +155,19 @@ func (g *Game) getShips() []*Ship {
 }
 
 func (g *Game) getLocation() Location {
+	if g.numPlayers == 1 && g.currentPlayer == 1 {
+		// Generate a random location to fire for the computer.
+		x := rand.Intn(10)
+		y := rand.Intn(10)
+		l := Location{x: x, y: y}
+		return l
+	}
 	for {
-		fmt.Println("[ Player", g.currentPlayer+1, "] Specify location to fire (a1 - j10): ")
+		if g.numPlayers == 2 {
+			fmt.Println("[ Player", g.currentPlayer+1, "] Specify location to fire (a1 - j10): ")
+		} else {
+			fmt.Println("Specify location to fire (a1 - j10): ")
+		}
 		var location string
 		fmt.Scanln(&location)
 		if len(location) > 3 {

@@ -8,7 +8,7 @@ import (
 func main() {
 
 	//numPlayers := getNumPlayers()
-	numPlayers := 2
+	numPlayers := 1
 	fmt.Println(numPlayers)
 
 	game := NewGame(numPlayers)
