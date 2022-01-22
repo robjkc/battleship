@@ -36,20 +36,17 @@ func (s *Ship) GetLocationDesc() string {
 	for i := 0; i < s.length; i++ {
 
 		if s.down {
-			desc = fmt.Sprintf("%s%s%d", desc, toLetter(s.startX), (s.startY + i + 1))
+			location := Location{x: s.startX, y: s.startY + i}
+			desc = fmt.Sprintf("%s%s", desc, location.Description())
 		} else {
-			desc = fmt.Sprintf("%s%s%d", desc, toLetter(s.startX+i), (s.startY + 1))
+			location := Location{x: s.startX + i, y: s.startY}
+			desc = fmt.Sprintf("%s%s", desc, location.Description())
 		}
 		if i < s.length-1 {
 			desc += ","
 		}
 	}
 	return desc
-}
-
-func toLetter(x int) string {
-	letters := "ABCDEFGHIJ"
-	return string(letters[x])
 }
 
 func (s *Ship) IncomingMissle(location Location) bool {
